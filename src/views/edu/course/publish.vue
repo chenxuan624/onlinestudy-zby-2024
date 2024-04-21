@@ -1,13 +1,13 @@
 <template>
     <div class="app-container">
         <h2 style="text-align: center;">发布新课程</h2>
-        <!-- 
+        <!--
             :active="3" 表示选中第三个步骤
          -->
         <el-steps :active="3" process-status="wait" align-center style="margin-bottom: 40px;">
             <el-step title="填写课程基本信息"/>
             <el-step title="创建课程大纲"/>
-            <el-step title="最终发布"/>
+            <el-step title="提交申请"/>
         </el-steps>
 
         <div class="ccInfo">
@@ -39,7 +39,7 @@ import course from '@/api/edu/course'
 
 export default {
 
-        
+
     data() {
         return {
             saveBtnDisabled: false, // 保存按钮是否禁用
@@ -83,7 +83,7 @@ export default {
                 }
             )
 
-            
+
         },
 
         // 根据课程id查询课程发布信息
@@ -98,7 +98,7 @@ export default {
             console.log('previous')
             this.$router.push({ path: '/course/chapter/' + this.courseId})
         },
-        
+
     }
 }
 </script>

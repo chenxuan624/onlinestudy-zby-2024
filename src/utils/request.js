@@ -32,10 +32,6 @@ service.interceptors.response.use(
          */
         const res = response.data
 
-        console.log("res前")
-        console.log(res)
-        console.log("res后")
-
         if (res.code === 401) {
             router.push('/login')
         }

@@ -47,9 +47,9 @@ export default {
     },
 
     // 4. 修改课程发布状态
-    publishCourseInfo(courseId) {
+    submitCourseInfo(courseId) {
         return request({
-            url: `/eduservice/edu-course/publishCourse/${courseId}`,
+            url: `/eduservice/edu-course/submitCourse/${courseId}`,
             method: 'post'
         })
     },

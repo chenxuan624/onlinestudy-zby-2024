@@ -82,7 +82,6 @@
           <i :class="collapseIcon" style="font-size: 26px; margin-top: 10px" @click="handleCollapse"></i>
           <el-breadcrumb separtor-class="el-icon-arrow-right" style="margin-left: 20px">
             <el-breadcrumb-item :to="{ path: '/'}">首页</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/course'}">课程中心</el-breadcrumb-item>
           </el-breadcrumb>
 
           <div style="flex: 1;width: 0; display: flex;align-items: center; justify-content: flex-end">

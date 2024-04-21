@@ -1,21 +1,21 @@
 <template>
     <div class="app-container">
         <h2 style="text-align: center;">发布新课程</h2>
-        <!-- 
+        <!--
             :active="2" 表示选中第二个步骤
          -->
         <el-steps :active="2" process-status="wait" align-center style="margin-bottom: 20px;">
             <el-step title="填写课程基本信息"/>
             <el-step title="创建课程大纲"/>
-            <el-step title="最终发布"/>
+            <el-step title="提交申请"/>
         </el-steps>
 
-        <el-button type="text" @click="openChapterDialog()" class="addChapter">添加章节</el-button> 
+        <el-button type="text" @click="openChapterDialog()" class="addChapter">添加章节</el-button>
 
         <ul class="chapterList">
             <li style="list-style-type:none" v-for="chapter in chapterVideoList" :key="chapter.id">
                 <p>
-                    {{ chapter.title }}
+                    {{chapter.sort}} : {{ chapter.title }}
 
                     <span class="acts">
                         <el-button style="" type="text" @click="openVideo(chapter.id)">添加小节</el-button>
@@ -26,7 +26,7 @@
                 <ul class="chanterList videoList">
                     <li style="list-style-type:none" v-for="video in chapter.children" :key="video.id">
                         <p>
-                            {{ video.title }}
+                            {{video.sort}}:{{ video.title }}
 
                             <span class="acts">
                                 <el-button style="" type="text" @click="openEditVideo(video.id)">编辑</el-button>
@@ -43,11 +43,11 @@
             <el-button :disabled="saveBtnDisabled" type="primary" @click="next">下一步</el-button>
         </div>
 
-        
+
         <!-- 添加和修改章节表单 -->
         <el-dialog :visible.sync="dialogChapterFormVisible" title="添加章节">
             <el-form :model="chapter" label-width="120px">
-                <el-form-item label="章节标题">   
+                <el-form-item label="章节标题">
                     <el-input v-model="chapter.title"/>
                 </el-form-item>
                 <el-form-item label="章节排序">
@@ -99,7 +99,7 @@
                 </el-form-item>
 
                 <el-form-item label="上传课件">
-                    <!-- 
+                    <!--
                     上传组件
                     ref  表示组件的唯一标识，类似于HTML中的id值
                     :auto-upload 是否自动上传
@@ -150,7 +150,7 @@ import chapter from '@/api/edu/chapter'
 import video from '@/api/edu/video'
 
 export default {
-    
+
     data() {
         return {
             saveBtnDisabled: false, // 保存按钮是否禁用
@@ -159,7 +159,7 @@ export default {
             chapter: { // 封装章节数据
                 title: '',
                 sort: 0
-            }, 
+            },
             video: {
                 title: '',
                 sort: 0,
@@ -218,7 +218,7 @@ export default {
                 message: '课程资料上传成功!'
             })
 
-            
+
         },
 
         // 上传失败之后操作的方法
@@ -242,7 +242,7 @@ export default {
 
             // 上传之后的视频名称
             this.video.videoOriginalName = file.name
-        
+
         },
 
         // 上传视频之前调用的方法
@@ -266,14 +266,14 @@ export default {
                     // 清空视频id，视频名称
                     this.video.videoSourceId = ''
                     this.video.videoOriginalName = ''
-                    
+
                 })
         },
 
         // 删除上传视频之前调用的方法
         beforeVodRemove(file,fileList) {
             return this.$confirm(`确定移除 ${file.name} 吗？`)
-        
+
         },
 
         // 添加小节弹框
@@ -302,16 +302,22 @@ export default {
         addVideo(){
             video.addVideo(this.video)
                 .then( response => {
+                  if (response.success) {
                     // 关闭弹窗
                     this.dialogVideoFormVisible = false
                     // 提示信息
                     this.$message({
-                        type: 'success',
-                        message: '添加课程小节成功!'
+                      type: 'success',
+                      message: '添加课程小节成功!'
                     })
                     // 刷新页面
                     this.getChapterVideo()
-
+                  }else {
+                    this.$message({
+                      type: 'error',
+                      message: response.message
+                    })
+                  }
                 })
         },
 
@@ -329,15 +335,23 @@ export default {
         updateVideo() {
             video.updateVideo(this.video)
                 .then( response => {
+                  if (response.success) {
                     // 关闭弹窗
                     this.dialogVideoFormVisible = false
                     // 提示信息
                     this.$message({
-                        type: 'success',
-                        message: '修改课程章节成功!'
+                      type: 'success',
+                      message: '修改课程章节成功!'
                     })
                     // 刷新页面
                     this.getChapterVideo()
+                  }else {
+                    this.$message({
+                      type: 'error',
+                      message: response.message
+                    })
+                  }
+
                 })
         },
 
@@ -389,15 +403,23 @@ export default {
             this.chapter.courseId = this.courseId // 设置课程id到chapter中
             chapter.addChapter(this.chapter)
                 .then( response => {
+                  if (response.success) {
                     // 关闭弹窗
                     this.dialogChapterFormVisible = false
                     // 提示信息
                     this.$message({
-                        type: 'success',
-                        message: '添加课程章节成功!'
+                      type: 'success',
+                      message: '添加课程章节成功!'
                     })
                     // 刷新页面
                     this.getChapterVideo()
+                  }
+                  else {
+                    this.$message({
+                      type: 'error',
+                      message: response.message
+                    })
+                  }
 
                 })
         },
@@ -417,15 +439,23 @@ export default {
         updateChapter() {
             chapter.updateChapter(this.chapter)
                 .then( response => {
+                  if (response.success){
                     // 关闭弹窗
                     this.dialogChapterFormVisible = false
                     // 提示信息
                     this.$message({
-                        type: 'success',
-                        message: '修改课程章节成功!'
+                      type: 'success',
+                      message: '修改课程章节成功!'
                     })
                     // 刷新页面
                     this.getChapterVideo()
+                  }else{
+                    this.$message({
+                      type: 'error',
+                      message: response.message
+                    })
+                  }
+
                 })
         },
 
@@ -461,7 +491,7 @@ export default {
             } else {
                 this.updateChapter()
             }
-            
+
         },
 
         // 根据课程id得到该课程的章节和小节
@@ -469,7 +499,7 @@ export default {
             chapter.getAllChapterVideo(this.courseId)
                 .then(response => {
                     this.chapterVideoList = response.data.allChapterVideo
-                })  
+                })
         },
 
         previous() {
@@ -479,7 +509,7 @@ export default {
 
         next() {
             console.log('next')
-            this.$router.push({ path: '/course/publish/' + this.courseId })
+            this.$router.push({ path: '/course/submit/' + this.courseId })
         }
     }
 }
@@ -514,7 +544,6 @@ export default {
 .chapterList .acts {
     float: right;
     font-size: 16px;
-    border: 1px solid #ff0000;
 }
 
 .videoList{
